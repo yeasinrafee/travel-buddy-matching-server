@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import status from 'http-status';
 
-const globalErrorHandler = (
+const globalErrorHandler: ErrorRequestHandler = (
   err: any,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   res.status(status.INTERNAL_SERVER_ERROR).json({
     success: false,

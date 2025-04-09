@@ -9,11 +9,6 @@ const validateRequest = (schema: AnyZodObject) => {
       });
       return next();
     } catch (err: any) {
-      //   const errors = err.errors.map((error: any) => error.message).join(', ');
-      //   return res.status(400).json({
-      //     success: false,
-      //     message: errors,
-      //   });
       next(err);
     }
   };

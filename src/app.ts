@@ -3,6 +3,7 @@ import cors from 'cors';
 import router from './app/routes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFoundErrorHandler from './app/middlewares/notFoundErrorHandler';
+import zodErrorHandler from './app/middlewares/zodErrorHandler';
 
 const app = express();
 
@@ -12,10 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', router);
 
-app.use(globalErrorHandler);
 app.use(notFoundErrorHandler);
+app.use(zodErrorHandler);
+app.use(globalErrorHandler);
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.send({
     message: 'Hello from travel buddy batching server!',
   });
