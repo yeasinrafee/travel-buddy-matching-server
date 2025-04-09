@@ -18,16 +18,16 @@ const registerUser = async (userData: any) => {
   };
 
   const result = await prisma.$transaction(async (transactionClient) => {
+    // create User
     const registeredUserData = await transactionClient.user.create({
       data: user,
     });
 
+    // Create UserProfile
     userProfile.userId = registeredUserData.id;
-
-    const registeredUserProfileData =
-      await transactionClient.userProfile.create({
-        data: userProfile,
-      });
+    await transactionClient.userProfile.create({
+      data: userProfile,
+    });
 
     return registeredUserData;
   });
