@@ -4,6 +4,7 @@ import ApiError from '../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import config from '../../../config';
 import { Secret } from 'jsonwebtoken';
+import status from 'http-status';
 
 // 1. User login
 const login = async (payload: { email: string; password: string }) => {
@@ -44,6 +45,37 @@ const login = async (payload: { email: string; password: string }) => {
   };
 };
 
+// 2. Getting access token using refresh token
+const refreshToken = async (token: string) => {
+  let decodedData;
+  try {
+    decodedData = jwtHelpers.verifyToken(
+      token,
+      config.jwt.refresh_token_secret as Secret
+    );
+  } catch (err) {
+    throw new ApiError(status.UNAUTHORIZED, 'You are not authorized');
+  }
+
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: decodedData.id,
+    },
+  });
+
+  // Generate Access Token
+  const accessToken = jwtHelpers.generateToken(
+    { id: userData.id, email: userData.email },
+    config.jwt.jwt_secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  return {
+    accessToken,
+  };
+};
+
 export const AuthService = {
   login,
+  refreshToken,
 };

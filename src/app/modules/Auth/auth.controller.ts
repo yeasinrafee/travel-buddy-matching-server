@@ -17,8 +17,8 @@ const login: RequestHandler = catchAsync(async (req, res) => {
   });
 
   sendResponse(res, {
-    statusCode: status.OK,
     success: true,
+    statusCode: status.OK,
     message: 'User logged in successfully',
     data: {
       id: result.userData.id,
@@ -29,6 +29,19 @@ const login: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+// 2. Getting access token using refresh token
+const refreshToken: RequestHandler = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const result = await AuthService.refreshToken(refreshToken);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: 'Fetching access token successfully',
+    data: result,
+  });
+});
 export const AuthController = {
   login,
+  refreshToken,
 };
