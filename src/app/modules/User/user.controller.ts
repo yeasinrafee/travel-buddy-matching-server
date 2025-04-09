@@ -8,9 +8,16 @@ const registerUser: RequestHandler = catchAsync(async (req, res) => {
   const data = req.body;
   const result = await UserService.registerUser(data);
   sendResponse(res, {
-    statusCode: 201,
     success: true,
+    statusCode: 201,
     message: 'User registered successfully',
+    data: {
+      id: result.id,
+      name: result.name,
+      email: result.email,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+    },
   });
 });
 
