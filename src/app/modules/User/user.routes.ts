@@ -13,6 +13,10 @@ router.post(
 
 router.get('/profile', UserController.getUser);
 
-router.put('/profile', UserController.updateUserIntoDB);
+router.put(
+  '/profile',
+  validateRequest(UserValidation.updateUserZodValidation),
+  UserController.updateUserIntoDB
+);
 
 export const UserRouter = router;

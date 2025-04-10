@@ -26,6 +26,23 @@ const registerUserZodValidation = z.object({
   }),
 });
 
+const updateUserZodValidation = z.object({
+  body: z.object({
+    name: z
+      .string({
+        required_error: 'Name field is required.',
+      })
+      .optional(),
+    email: z
+      .string({
+        required_error: 'Email field is required.',
+      })
+      .email('Email must be a valid email address.')
+      .optional(),
+  }),
+});
+
 export const UserValidation = {
   registerUserZodValidation,
+  updateUserZodValidation,
 };

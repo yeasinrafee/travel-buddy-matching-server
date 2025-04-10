@@ -57,6 +57,13 @@ const getUserFromDB = async (token: string | undefined) => {
     where: {
       id: verifiedToken.id,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return result;
@@ -88,6 +95,13 @@ const updateUserIntoDB = async (
       id: verifiedToken.id,
     },
     data,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return result;
