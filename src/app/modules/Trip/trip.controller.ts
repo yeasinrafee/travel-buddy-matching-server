@@ -2,6 +2,8 @@ import status from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { TripService } from './trip.service';
+import pick from '../../../shared/pick';
+import { adminFilterableFields } from './trip.constant';
 
 // 1. Create Trip
 const createTrip = catchAsync(async (req, res) => {
@@ -19,7 +21,9 @@ const createTrip = catchAsync(async (req, res) => {
 
 // 2. Create Trip
 const getAllTrips = catchAsync(async (req, res) => {
-  const result = await TripService.getAllTrips(req.query);
+  const filter = pick(req.query, adminFilterableFields);
+
+  const result = await TripService.getAllTrips(filter);
 
   sendResponse(res, {
     success: true,

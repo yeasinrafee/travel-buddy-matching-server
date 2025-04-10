@@ -34,7 +34,7 @@ const createTrip = async (token: string | undefined, data: any) => {
 
 // 2. Get All Trips
 const getAllTrips = async (params: any) => {
-  const { searchTerm } = params;
+  const { searchTerm, minBudget, maxBudget, ...filterData } = params;
   const andCondition: Prisma.TripWhereInput[] = [];
   const whereCondition: Prisma.TripWhereInput = { AND: andCondition };
 
@@ -53,6 +53,37 @@ const getAllTrips = async (params: any) => {
       ],
     });
   }
+
+  if (Object.keys(filterData).length) {
+    andCondition.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: filterData[key],
+        },
+      })),
+    });
+  }
+
+  if (minBudget || maxBudget) {
+    const minB = parseFloat(minBudget);
+    const maxB = parseFloat(maxBudget);
+    const budgetFilter: any = {};
+
+    if (!isNaN(minB)) {
+      budgetFilter.gte = minB;
+    }
+
+    if (!isNaN(maxB)) {
+      budgetFilter.lte = maxB;
+    }
+
+    if (Object.keys(budgetFilter).length > 0) {
+      andCondition.push({
+        budget: budgetFilter,
+      });
+    }
+  }
+
   const result = await prisma.trip.findMany({
     where: whereCondition,
   });
