@@ -5,6 +5,7 @@ import config from '../../../config';
 import { Secret } from 'jsonwebtoken';
 import ApiError from '../../errors/ApiError';
 import status from 'http-status';
+import { User } from '@prisma/client';
 // 1. Register User
 const registerUser = async (userData: any) => {
   const { password, profile, ...user } = userData;
@@ -61,7 +62,39 @@ const getUserFromDB = async (token: string | undefined) => {
   return result;
 };
 
+// 3. Update User
+const updateUserIntoDB = async (
+  token: string | undefined,
+  data: Partial<User>
+) => {
+  // Verification of the user
+  const verifiedToken = jwtHelpers.verifyToken(
+    token as string,
+    config.jwt.jwt_secret as Secret
+  );
+
+  if (!verifiedToken) {
+    throw new ApiError(status.UNAUTHORIZED, 'Unauthorized access!');
+  }
+
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: verifiedToken.id,
+    },
+  });
+
+  const result = await prisma.user.update({
+    where: {
+      id: verifiedToken.id,
+    },
+    data,
+  });
+
+  return result;
+};
+
 export const UserService = {
   registerUser,
   getUserFromDB,
+  updateUserIntoDB,
 };

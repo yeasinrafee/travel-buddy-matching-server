@@ -34,7 +34,22 @@ const getUser: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+// 3. Update User
+const updateUserIntoDB: RequestHandler = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  const data = req.body;
+  const result = await UserService.updateUserIntoDB(token, data);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: 'User profile updated successfully',
+    data: result,
+  });
+});
 export const UserController = {
   registerUser,
   getUser,
+  updateUserIntoDB,
 };

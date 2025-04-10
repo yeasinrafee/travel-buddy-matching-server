@@ -13,4 +13,6 @@ router.post(
 
 router.get('/profile', UserController.getUser);
 
+router.put('/profile', UserController.updateUserIntoDB);
+
 export const UserRouter = router;
