@@ -17,6 +17,19 @@ const createTrip = catchAsync(async (req, res) => {
   });
 });
 
+// 2. Create Trip
+const getAllTrips = catchAsync(async (req, res) => {
+  const result = await TripService.getAllTrips(req.query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: 'Trips retrieved  successfully',
+    data: result,
+  });
+});
+
 export const TripController = {
   createTrip,
+  getAllTrips,
 };
