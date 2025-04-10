@@ -99,7 +99,19 @@ const getAllTrips = async (params: any, options: any) => {
             createdAt: 'desc',
           },
   });
-  return result;
+
+  const total = await prisma.trip.count({
+    where: whereCondition,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
 };
 
 export const TripService = {

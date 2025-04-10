@@ -30,7 +30,8 @@ const getAllTrips = catchAsync(async (req, res) => {
     success: true,
     statusCode: status.OK,
     message: 'Trips retrieved  successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
