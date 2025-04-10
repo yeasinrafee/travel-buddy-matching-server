@@ -5,6 +5,7 @@ import ApiError from '../../errors/ApiError';
 import status from 'http-status';
 import prisma from '../../../shared/prisma';
 import { Prisma } from '@prisma/client';
+import paginationHelper from '../../../helpers/paginationHelper';
 
 // 1. Create Trip
 const createTrip = async (token: string | undefined, data: any) => {
@@ -33,8 +34,9 @@ const createTrip = async (token: string | undefined, data: any) => {
 };
 
 // 2. Get All Trips
-const getAllTrips = async (params: any) => {
+const getAllTrips = async (params: any, options: any) => {
   const { searchTerm, minBudget, maxBudget, ...filterData } = params;
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper(options);
   const andCondition: Prisma.TripWhereInput[] = [];
   const whereCondition: Prisma.TripWhereInput = { AND: andCondition };
 
@@ -86,6 +88,16 @@ const getAllTrips = async (params: any) => {
 
   const result = await prisma.trip.findMany({
     where: whereCondition,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? {
+            [options.sortBy]: options.sortOrder,
+          }
+        : {
+            createdAt: 'desc',
+          },
   });
   return result;
 };

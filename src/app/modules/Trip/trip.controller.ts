@@ -22,8 +22,9 @@ const createTrip = catchAsync(async (req, res) => {
 // 2. Create Trip
 const getAllTrips = catchAsync(async (req, res) => {
   const filter = pick(req.query, adminFilterableFields);
+  const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
 
-  const result = await TripService.getAllTrips(filter);
+  const result = await TripService.getAllTrips(filter, options);
 
   sendResponse(res, {
     success: true,
