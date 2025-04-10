@@ -17,6 +17,20 @@ const getTravelBuddies = catchAsync(async (req, res) => {
   });
 });
 
+// 2. Response Travel Buddy Request
+const responseTravelBuddyRequest = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  const result = await TravelBuddyService.responseTravelBuddyRequest(token);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: 'Travel buddy request responded successfully',
+    data: result,
+  });
+});
+
 export const TravelBuddyController = {
   getTravelBuddies,
+  responseTravelBuddyRequest,
 };

@@ -47,6 +47,33 @@ const getTravelBuddies = async (tripId: string, token: string | undefined) => {
   return result;
 };
 
+// 2. Respond to Travel Buddy Request
+const responseTravelBuddyRequest = async (token: string | undefined) => {
+  // Verification of the user
+  const verifiedToken = jwtHelpers.verifyToken(
+    token as string,
+    config.jwt.jwt_secret as Secret
+  );
+
+  if (!verifiedToken) {
+    throw new ApiError(status.UNAUTHORIZED, 'Unauthorized access!');
+  }
+
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: verifiedToken.id,
+    },
+  });
+
+  const result = await prisma.travelBuddyRequest.findMany({
+    include: {
+      trip: true,
+    },
+  });
+  return result;
+};
+
 export const TravelBuddyService = {
   getTravelBuddies,
+  responseTravelBuddyRequest,
 };
