@@ -90,6 +90,9 @@ const getAllTrips = async (params: any, options: any) => {
     where: whereCondition,
     skip,
     take: limit,
+    include: {
+      user: true,
+    },
     orderBy:
       options.sortBy && options.sortOrder
         ? {
@@ -114,7 +117,50 @@ const getAllTrips = async (params: any, options: any) => {
   };
 };
 
+// 3. Send Travel Buddy Request
+const sendTravelBuddyRequest = async (
+  token: string | undefined,
+  id: string,
+  data: any
+) => {
+  // Verification of the user
+  const verifiedToken = jwtHelpers.verifyToken(
+    token as string,
+    config.jwt.jwt_secret as Secret
+  );
+
+  if (!verifiedToken) {
+    throw new ApiError(status.UNAUTHORIZED, 'Unauthorized access!');
+  }
+
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: verifiedToken.id,
+    },
+  });
+
+  // If the trip exists and the trip belongs to the user or not
+  const isTripExist = await prisma.trip.findFirstOrThrow({
+    where: {
+      id,
+      userId: verifiedToken.userId,
+    },
+  });
+
+  const requestData = {
+    tripId: id,
+    userId: data.userId,
+  };
+
+  const result = await prisma.travelBuddyRequest.create({
+    data: requestData,
+  });
+
+  return result;
+};
+
 export const TripService = {
   createTrip,
   getAllTrips,
+  sendTravelBuddyRequest,
 };

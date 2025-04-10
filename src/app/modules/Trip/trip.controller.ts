@@ -35,7 +35,24 @@ const getAllTrips = catchAsync(async (req, res) => {
   });
 });
 
+// 3. Create Trip
+const sendTravelBuddyRequest = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  const { tripId } = req.params;
+  const data = req.body;
+
+  const result = await TripService.sendTravelBuddyRequest(token, tripId, data);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.CREATED,
+    message: 'Travel buddy request sent successfully',
+    data: result,
+  });
+});
+
 export const TripController = {
   createTrip,
   getAllTrips,
+  sendTravelBuddyRequest,
 };

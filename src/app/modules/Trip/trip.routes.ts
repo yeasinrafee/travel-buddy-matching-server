@@ -13,4 +13,6 @@ router.post(
 
 router.get('/trips', TripController.getAllTrips);
 
+router.post('/trip/:tripId/request', TripController.sendTravelBuddyRequest);
+
 export const TripRouter = router;
