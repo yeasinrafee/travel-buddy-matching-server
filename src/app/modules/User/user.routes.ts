@@ -11,4 +11,6 @@ router.post(
   UserController.registerUser
 );
 
+router.get('/profile', UserController.getUser);
+
 export const UserRouter = router;

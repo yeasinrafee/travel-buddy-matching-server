@@ -22,6 +22,19 @@ const registerUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+// 2. Get User
+const getUser: RequestHandler = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+  const result = await UserService.getUserFromDB(token);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: status.OK,
+    message: 'User profile retrieved successfully',
+    data: result,
+  });
+});
 export const UserController = {
   registerUser,
+  getUser,
 };
